@@ -22,12 +22,13 @@ def check_int(int_to_check, max_int, min_int):
     if it's not.
     """
     try:
-        int(int_to_check)
+        int_to_check = int(int_to_check)
         if type(int_to_check) == float:
             print("Please enter a whole number")
             return False
         if int_to_check < min_int or int_to_check > max_int:
-            print(f"Please enter a number between {min_int} and {max_int}")
+            print(f"Please enter a whole number between {min_int} "
+                  f"and {max_int}")
             return False
         else:
             return True
@@ -55,7 +56,9 @@ def menu_print(menu_items):
     """
     for menu_num in range(len(menu_items)):
         print(f"{menu_num + 1}). {menu_items[menu_num]}")
-    user_input = input("Enter menu option (): ")
+    user_input = input("\n> Enter menu option (1, 2, 3): ")
+    while check_int(user_input, len(menu_items), 1) is False:
+        user_input = input("\n> Enter menu option (1, 2, 3): ")
 
 
 menu_print(main_menu)
