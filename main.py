@@ -4,6 +4,9 @@
 # 7/6/2022
 # A simple math game  with an uncertain reward
 
+# Import modules
+import sys
+
 # Define variables
 main_menu = ["Play quiz", "Select difficulty", "Select quiz length", "Quit"]
 
@@ -56,9 +59,38 @@ def menu_print(menu_items):
     """
     for menu_num in range(len(menu_items)):
         print(f"{menu_num + 1}). {menu_items[menu_num]}")
-    user_input = input("\n> Enter menu option (1, 2, 3): ")
+    user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
     while check_int(user_input, len(menu_items), 1) is False:
-        user_input = input("\n> Enter menu option (1, 2, 3): ")
+        user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
+
+    # Run option specified by user
+    if user_input == 1:
+        # Start quiz
+        play_game()
+
+    elif user_input == 2:
+        # Change difficulty
+        change_difficulty()
+
+    elif user_input == 3:
+        # Change stakes level
+        change_stakes()
+
+    else:
+        print("Thank you for playing")
+        sys.exit()
+
+
+def play_game():
+    print("filler")
+
+
+def change_difficulty():
+    print("filler")
+
+
+def change_stakes():
+    print("filler")
 
 
 menu_print(main_menu)
