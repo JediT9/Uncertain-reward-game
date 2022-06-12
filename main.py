@@ -8,7 +8,8 @@
 import sys
 
 # Define variables
-main_menu = ["Play quiz", "Select difficulty", "Select quiz length", "Quit"]
+main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
+             "quit_game"]
 
 # Define constants
 
@@ -58,39 +59,32 @@ def menu_print(menu_items):
     and call the relevant function.
     """
     for menu_num in range(len(menu_items)):
-        print(f"{menu_num + 1}). {menu_items[menu_num]}")
+        print(f"{menu_num + 1}). "
+              f"{menu_items[menu_num].capitalize().replace('_', ' ')}")
     user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
     while check_int(user_input, len(menu_items), 1) is False:
         user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
+    user_input = int(user_input)
 
     # Run option specified by user
-    if user_input == 1:
-        # Start quiz
-        play_game()
-
-    elif user_input == 2:
-        # Change difficulty
-        change_difficulty()
-
-    elif user_input == 3:
-        # Change stakes level
-        change_stakes()
-
-    else:
-        print("Thank you for playing")
-        sys.exit()
+    globals()[main_menu[user_input - 1]]()
 
 
-def play_game():
+def play_quiz():
     print("filler")
 
 
-def change_difficulty():
+def select_difficulty():
     print("filler")
 
 
-def change_stakes():
+def select_stakes_level():
     print("filler")
+
+
+def quit_game():
+    print("Thank you for playing")
+    sys.exit()
 
 
 menu_print(main_menu)
