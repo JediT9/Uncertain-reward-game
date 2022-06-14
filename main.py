@@ -6,6 +6,7 @@
 
 # Import modules
 import sys
+import random
 
 # Define variables
 main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
@@ -71,7 +72,32 @@ def menu_print(menu_items):
 
 
 def play_quiz():
-    print("filler")
+    quiz_length = 5
+    questions = question_generator(quiz_length)
+    print("Beginning quiz...\n")
+    for question in range(quiz_length):
+        ask_question(question, questions)
+
+
+def question_generator(num_of_questions):
+    questions_and_answers = {}
+    questions_list = []
+    for question in range(num_of_questions):
+        x = random.randint(1, 20)
+        a = random.randint(1, 10)
+        b = random.randint(1, 20)
+        c = random.randint(1, 20)
+        answer = (a * x ** 2) + (b * x) + c
+        question = f"{a}x^2 + {b}x + {c} = {answer}"
+        questions_and_answers[question] = x
+        questions_list.append(question)
+    return [questions_and_answers, questions_list]
+
+
+def ask_question(question_num, questions):
+    print(f"Question {question_num + 1}: \n")
+    current_question = questions[1][question_num]
+    print(current_question)
 
 
 def select_difficulty():
