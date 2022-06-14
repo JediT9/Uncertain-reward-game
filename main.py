@@ -5,6 +5,7 @@
 # A simple math game  with an uncertain reward
 
 # Import modules
+import cmath
 import sys
 import random
 
@@ -83,21 +84,31 @@ def question_generator(num_of_questions):
     questions_and_answers = {}
     questions_list = []
     for question in range(num_of_questions):
-        x = random.randint(1, 20)
-        a = random.randint(1, 10)
-        b = random.randint(1, 20)
-        c = random.randint(1, 20)
-        answer = (a * x ** 2) + (b * x) + c
-        question = f"{a}x^2 + {b}x + {c} = {answer}"
-        questions_and_answers[question] = x
+        x1 = 0.5
+        x2 = 0.5
+        while str(x1)[-1] != '0' or str(x2)[-1] != '0':
+            x = random.randint(1, 20)
+            a = random.randint(1, 10)
+            b = random.randint(1, 20)
+            c = random.randint(1, 20)
+            answer = (a * x ** 2) + (b * x) + c
+            c = c - answer
+            d = b ** 2 - 4 * a * c
+            x1 = (-b + cmath.sqrt(d))/(2 * a)
+            x2 = (-b - cmath.sqrt(d))/(2 * a)
+            x1 = x1 if x1.imag else x1.real
+            x2 = x2 if x2.imag else x2.real
+            question = f"{a}x^2 + {b}x + {c} = 0"
+            print(x1, x2)
+        questions_and_answers[question] = x1
         questions_list.append(question)
     return [questions_and_answers, questions_list]
 
 
 def ask_question(question_num, questions):
-    print(f"Question {question_num + 1}: \n")
+    print(f"Question {question_num + 1}: ")
     current_question = questions[1][question_num]
-    print(current_question)
+    print(current_question + "\n")
 
 
 def select_difficulty():
