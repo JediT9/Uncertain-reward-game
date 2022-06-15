@@ -13,11 +13,9 @@ import random
 main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
              "quit_game"]
 
-# Define constants
-
 
 # Define functions
-def check_int(int_to_check, max_int, min_int):
+def check_int(int_to_check, max_int=1000, min_int=-1000):
     """
     Accepts the variable to check as int_to_check, the maximum value for it as
     max_int and the minimum value as min_int. try making int_to_check an
@@ -81,8 +79,7 @@ def play_quiz():
 
 
 def question_generator(num_of_questions):
-    questions_and_answers = {}
-    questions_list = []
+    questions_and_answers = []
     for question in range(num_of_questions):
         x1 = 0.5
         x2 = 0.5
@@ -99,16 +96,28 @@ def question_generator(num_of_questions):
             x1 = x1 if x1.imag else x1.real
             x2 = x2 if x2.imag else x2.real
             question = f"{a}x^2 + {b}x + {c} = 0"
-            print(x1, x2)
-        questions_and_answers[question] = x1
-        questions_list.append(question)
-    return [questions_and_answers, questions_list]
+        questions_and_answers.append([question, x1, x2])
+    return questions_and_answers
 
 
 def ask_question(question_num, questions):
-    print(f"Question {question_num + 1}: ")
-    current_question = questions[1][question_num]
-    print(current_question + "\n")
+    print(f"\nQuestion {question_num + 1}: ")
+    current_question = questions[question_num].pop(0)
+    print(current_question)
+    working = [""]
+    print("Working (type done on a new line to enter answers): ")
+    while working[-1] != "done":
+        working.append(input(""))
+    user_x1 = input("Enter x value 1: ")
+    while check_int(user_x1) is False:
+        user_x1 = input("Enter x value 1: ")
+    user_x1 = int(user_x1)
+    user_x2 = input("Enter x value 2: ")
+    while check_int(user_x2) is False:
+        user_x2 = input("Enter x value 2: ")
+    user_x2 = int(user_x2)
+    if user_x1 in questions[question_num]:
+
 
 
 def select_difficulty():
