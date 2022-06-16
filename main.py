@@ -49,7 +49,7 @@ def check_string(str_to_check, acceptable_strings: list):
     if str_to_check in acceptable_strings:
         return True
     else:
-        print(f"Please enter one of: {', '  .join(acceptable_strings)}")
+        print(f"Please enter one of: {', '.join(acceptable_strings)}")
         return False
 
 
@@ -75,7 +75,11 @@ def play_quiz():
     questions = question_generator(quiz_length)
     print("Beginning quiz...\n")
     for question in range(quiz_length):
-        ask_question(question, questions)
+        answer = ask_question(question, questions)
+        if True in answer:
+            print(f"Congratulations! you got {sum(answer)} x-values correct!")
+        else:
+            print("Unlucky, you got both x-values wrong")
 
 
 def question_generator(num_of_questions):
@@ -91,8 +95,8 @@ def question_generator(num_of_questions):
             answer = (a * x ** 2) + (b * x) + c
             c = c - answer
             d = b ** 2 - 4 * a * c
-            x1 = (-b + cmath.sqrt(d))/(2 * a)
-            x2 = (-b - cmath.sqrt(d))/(2 * a)
+            x1 = (-b + cmath.sqrt(d)) / (2 * a)
+            x2 = (-b - cmath.sqrt(d)) / (2 * a)
             x1 = x1 if x1.imag else x1.real
             x2 = x2 if x2.imag else x2.real
             question = f"{a}x^2 + {b}x + {c} = 0"
@@ -116,8 +120,7 @@ def ask_question(question_num, questions):
     while check_int(user_x2) is False:
         user_x2 = input("Enter x value 2: ")
     user_x2 = int(user_x2)
-    if user_x1 in questions[question_num]:
-
+    return [user_x1 in questions[question_num], user_x2 in questions[question_num] and user_x2 != user_x1]
 
 
 def select_difficulty():
