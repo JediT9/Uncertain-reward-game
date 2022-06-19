@@ -12,6 +12,7 @@ import random
 # Define variables
 main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
              "quit_game"]
+stakes = 10
 
 
 # Define functions
@@ -71,15 +72,22 @@ def menu_print(menu_items):
 
 
 def play_quiz():
+    global stakes
+    multiplier = stakes
     quiz_length = 5
+    total_points = 0
     questions = question_generator(quiz_length)
     print("Beginning quiz...\n")
     for question in range(quiz_length):
         answer = ask_question(question, questions)
         if True in answer:
-            print(f"Congratulations! you got {sum(answer)} x-values correct!")
+            print(f"Congratulations! you got {sum(answer)} x-value/s correct!")
         else:
             print("Unlucky, you got both x-values wrong")
+        points = random.randint(1, multiplier) * (sum(answer) - 1)
+        total_points += points
+        print(points, total_points)
+    menu_print(main_menu)
 
 
 def question_generator(num_of_questions):
@@ -120,7 +128,10 @@ def ask_question(question_num, questions):
     while check_int(user_x2) is False:
         user_x2 = input("Enter x value 2: ")
     user_x2 = int(user_x2)
-    return [user_x1 in questions[question_num], user_x2 in questions[question_num] and user_x2 != user_x1]
+    print(f"The correct x-values are {int(questions[question_num][0])} and "
+          f"{int(questions[question_num][-1])}")
+    return [user_x1 in questions[question_num],
+            user_x2 in questions[question_num] and user_x2 != user_x1]
 
 
 def select_difficulty():
@@ -128,7 +139,11 @@ def select_difficulty():
 
 
 def select_stakes_level():
-    print("filler")
+    global stakes
+    stakes = input("> Enter stakes level: ")
+    while check_int(stakes, min_int=0) is False:
+        stakes = input("> Enter stakes level: ")
+    stakes = int(stakes)
 
 
 def quit_game():
