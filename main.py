@@ -86,7 +86,9 @@ def play_quiz():
             print("Unlucky, you got both x-values wrong")
         points = random.randint(1, multiplier) * (sum(answer) - 1)
         total_points += points
-        print(points, total_points)
+        print(f"You earned {points} points this round, making your total "
+              f"{total_points}")
+    print(f"\nWell done, you scored {total_points} this round!")
     menu_print(main_menu)
 
 
@@ -144,6 +146,7 @@ def select_stakes_level():
     while check_int(stakes, min_int=0) is False:
         stakes = input("> Enter stakes level: ")
     stakes = int(stakes)
+    menu_print(main_menu)
 
 
 def quit_game():
