@@ -13,6 +13,7 @@ import random
 main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
              "quit_game"]
 stakes = 10
+difficulty = 1
 
 
 # Define functions
@@ -59,6 +60,7 @@ def menu_print(menu_items):
     Print out formatted menu, then ask user which option they want to select,
     and call the relevant function.
     """
+    print("\nMain menu:\n")
     for menu_num in range(len(menu_items)):
         print(f"{menu_num + 1}). "
               f"{menu_items[menu_num].capitalize().replace('_', ' ')}")
@@ -77,11 +79,11 @@ def play_quiz():
     quiz_length = 5
     total_points = 0
     questions = question_generator(quiz_length)
-    print("Beginning quiz...\n")
+    print("Beginning quiz...")
     for question in range(quiz_length):
         answer = ask_question(question, questions)
         if True in answer:
-            print(f"Congratulations! you got {sum(answer)} x-value/s correct!")
+            print(f"Congratulations! You got {sum(answer)} x-value/s correct!")
         else:
             print("Unlucky, you got both x-values wrong")
         points = random.randint(1, multiplier) * (sum(answer) - 1)
@@ -93,15 +95,16 @@ def play_quiz():
 
 
 def question_generator(num_of_questions):
+    global difficulty
     questions_and_answers = []
     for question in range(num_of_questions):
         x1 = 0.5
         x2 = 0.5
         while str(x1)[-1] != '0' or str(x2)[-1] != '0':
             x = random.randint(1, 20)
-            a = random.randint(1, 10)
-            b = random.randint(1, 20)
-            c = random.randint(1, 20)
+            a = random.randint(1, difficulty ** 2)
+            b = random.randint(1, difficulty * 5)
+            c = random.randint(1, difficulty * 5)
             answer = (a * x ** 2) + (b * x) + c
             c = c - answer
             d = b ** 2 - 4 * a * c
@@ -109,7 +112,10 @@ def question_generator(num_of_questions):
             x2 = (-b - cmath.sqrt(d)) / (2 * a)
             x1 = x1 if x1.imag else x1.real
             x2 = x2 if x2.imag else x2.real
-            question = f"{a}x^2 + {b}x + {c} = 0"
+            question = f" {a}x^2 + {b}x + {c} = 0"
+            question = question.replace(" 1x", " x")
+            question = question.replace(" + -", " - ")
+            print(question)
         questions_and_answers.append([question, x1, x2])
     return questions_and_answers
 
@@ -137,7 +143,20 @@ def ask_question(question_num, questions):
 
 
 def select_difficulty():
-    print("filler")
+    global difficulty
+    difficulties = ["easy", "medium", "hard"]
+    user_difficulty = input("> Enter difficulty "
+                            "(easy, medium, hard): ").lower().strip()
+    while check_string(user_difficulty, difficulties) is False:
+        user_difficulty = input("> Enter difficulty "
+                                "(easy, medium, hard): ").lower().strip()
+    if user_difficulty == "easy":
+        difficulty = 1
+    elif user_difficulty == "medium":
+        difficulty = 2
+    else:
+        difficulty = 4
+    menu_print(main_menu)
 
 
 def select_stakes_level():
