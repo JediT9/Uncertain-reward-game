@@ -80,6 +80,10 @@ def play_quiz():
     total_points = 0
     questions = question_generator(quiz_length)
     print("Beginning quiz...")
+    high_score_txt = open("high score.txt", "r+")
+    high_score = high_score_txt.read()
+    high_score = int(high_score)
+    print(f"The current high score is: {high_score}")
     for question in range(quiz_length):
         answer = ask_question(question, questions)
         if True in answer:
@@ -91,6 +95,12 @@ def play_quiz():
         print(f"You earned {points} points this round, making your total "
               f"{total_points}")
     print(f"\nWell done, you scored {total_points} this round!")
+    if total_points > high_score:
+        print(f"Congratulations! You beat the former high score of "
+              f"{high_score} by {total_points - high_score} points!")
+        high_score_txt.seek(0)
+        high_score_txt.write(str(total_points))
+    high_score_txt.close()
     menu_print(main_menu)
 
 
@@ -115,7 +125,6 @@ def question_generator(num_of_questions):
             question = f" {a}x^2 + {b}x + {c} = 0"
             question = question.replace(" 1x", " x")
             question = question.replace(" + -", " - ")
-            print(question)
         questions_and_answers.append([question, x1, x2])
     return questions_and_answers
 
