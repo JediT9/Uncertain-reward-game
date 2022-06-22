@@ -75,6 +75,7 @@ def menu_print(menu_items):
 
 def play_quiz():
     global stakes
+    global difficulty
     multiplier = stakes
     quiz_length = 5
     total_points = 0
@@ -90,7 +91,7 @@ def play_quiz():
             print(f"Congratulations! You got {sum(answer)} x-value/s correct!")
         else:
             print("Unlucky, you got both x-values wrong")
-        points = random.randint(1, multiplier) * (sum(answer) - 1)
+        points = (random.randint(1, multiplier) * (sum(answer) - 1)) * difficulty
         total_points += points
         print(f"You earned {points} points this round, making your total "
               f"{total_points}")
