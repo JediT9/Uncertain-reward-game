@@ -253,7 +253,7 @@ def select_stakes_level():
     """
     # Ask user what stakes level they want and check they enter a valid number
     stakes = input("> Enter stakes level: ")
-    while check_int(stakes, min_int=0) is False:
+    while check_int(stakes, 999, 1) is False:
         stakes = input("> Enter stakes level: ")
     stakes = int(stakes)
     return stakes
