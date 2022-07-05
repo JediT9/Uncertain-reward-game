@@ -64,11 +64,19 @@ def menu_print(menu_items):
     Print out formatted menu, then ask user which option they want to select,
     and call the relevant function.
     """
+
+    # Define constants
+    EXIT_PROGRAMME = 4
+    MIN_MENU_INPUT = 1
+    PLAY_QUIZ_INPUT = 1
+    SET_DIFFICULTY_INPUT = 2
+    SET_STAKES_INPUT = 3
+
     # Set default variable values
     difficulty = 1
     stakes_level = 10
     user_input = 1
-    while user_input != 4:
+    while user_input != EXIT_PROGRAMME:
 
         # Print welcome and list menu options
         print("\nMain menu:\n")
@@ -78,16 +86,16 @@ def menu_print(menu_items):
 
         # Get user input and check it is an integer and a valid option
         user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
-        while check_int(user_input, len(menu_items), 1) is False:
+        while check_int(user_input, len(menu_items), MIN_MENU_INPUT) is False:
             user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
         user_input = int(user_input)
 
         # Run option specified by user
-        if user_input == 1:
+        if user_input == PLAY_QUIZ_INPUT:
             play_quiz(difficulty, stakes_level)
-        elif user_input == 2:
+        elif user_input == SET_DIFFICULTY_INPUT:
             difficulty = select_difficulty()
-        elif user_input == 3:
+        elif user_input == SET_STAKES_INPUT:
             stakes_level = select_stakes_level()
 
 
@@ -100,6 +108,10 @@ def play_quiz(difficulty, points_multiplier):
     # Set default values for variables
     quiz_length = 5
     total_points = 0
+
+    # Define constants
+    MIN_POINTS = 1
+    START_OF_FILE = 0
 
     # generate questions
     questions = question_generator(quiz_length, difficulty)
@@ -122,7 +134,7 @@ def play_quiz(difficulty, points_multiplier):
             print(f"Congratulations! You got {sum(answer)} x-value/s correct!")
         else:
             print("Unlucky, you got both x-values wrong")
-        points = (random.randint(1, points_multiplier) *
+        points = (random.randint(MIN_POINTS, points_multiplier) *
                   (sum(answer) - 1)) * difficulty
         total_points += points
         print(f"You earned {points} points this round, making your total "
@@ -135,7 +147,7 @@ def play_quiz(difficulty, points_multiplier):
     if total_points > high_score:
         print(f"Congratulations! You beat the former high score of "
               f"{high_score} by {total_points - high_score} points!")
-        high_score_txt.seek(0)
+        high_score_txt.seek(START_OF_FILE)
         high_score_txt.write(str(total_points))
     high_score_txt.close()
 
@@ -149,6 +161,13 @@ def question_generator(num_of_questions, difficulty_multiplier):
     # reset question list to empty
     questions_and_answers = []
 
+    # Define constants
+    MIN_VARIABLE = 1
+    MAX_X = 20
+    B_MULTI = 5
+    C_MULTI = 5
+    A_POWER = 2
+
     # Start a for loop to repeat the generator as many times as specified
     for question in range(num_of_questions):
         x1 = 0.5
@@ -158,10 +177,10 @@ def question_generator(num_of_questions, difficulty_multiplier):
         while str(x1)[-1] != '0' or str(x2)[-1] != '0':
 
             # Generate random values for each variable
-            x = random.randint(1, 20)
-            a = random.randint(1, difficulty_multiplier ** 2)
-            b = random.randint(1, difficulty_multiplier * 5)
-            c = random.randint(1, difficulty_multiplier * 5)
+            x = random.randint(MIN_VARIABLE, MAX_X)
+            a = random.randint(MIN_VARIABLE, difficulty_multiplier ** A_POWER)
+            b = random.randint(MIN_VARIABLE, difficulty_multiplier * B_MULTI)
+            c = random.randint(MIN_VARIABLE, difficulty_multiplier * C_MULTI)
 
             # Calculate the answer and subtract that from c to make it equal 0
             answer = (a * x ** 2) + (b * x) + c
@@ -229,6 +248,11 @@ def select_difficulty():
     # Define possible difficulties
     difficulties = ["easy", "medium", "hard"]
 
+    # Define constants
+    EASY_MULTIPLIER = 1
+    MEDIUM_MULTIPLIER = 2
+    HARD_MULTIPLIER = 4
+
     # get user's input and check if it is an acceptable answer
     user_difficulty = input("> Enter difficulty "
                             "(easy, medium, hard): ").lower().strip()
@@ -238,11 +262,11 @@ def select_difficulty():
 
     # Set difficulty multiplier depending on user's input
     if user_difficulty == "easy":
-        difficulty_multiplier = 1
+        difficulty_multiplier = EASY_MULTIPLIER
     elif user_difficulty == "medium":
-        difficulty_multiplier = 2
+        difficulty_multiplier = MEDIUM_MULTIPLIER
     else:
-        difficulty_multiplier = 4
+        difficulty_multiplier = HARD_MULTIPLIER
     return difficulty_multiplier
 
 
@@ -251,9 +275,13 @@ def select_stakes_level():
     Ask the user what stakes level they want to play on, and return their
     answer.
     """
+    # Define constants
+    MAX_STAKES = 999
+    MIN_STAKES = 1
+
     # Ask user what stakes level they want and check they enter a valid number
     stakes = input("> Enter stakes level: ")
-    while check_int(stakes, 999, 1) is False:
+    while check_int(stakes, MAX_STAKES, MIN_STAKES) is False:
         stakes = input("> Enter stakes level: ")
     stakes = int(stakes)
     return stakes
