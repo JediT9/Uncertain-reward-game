@@ -14,7 +14,7 @@ main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
 
 
 # Define functions
-def check_int(int_to_check, max_int=1000, min_int=-1000):
+def check_int(int_to_check, max_int, min_int):
     """
     Accepts the variable to check as int_to_check, the maximum value for it as
     max_int and the minimum value as min_int. Return True if the supplied input
@@ -212,6 +212,10 @@ def ask_question(question_num, questions):
     the user unlimited space for working, then return a list containing a
     boolean value for each x-value (true = correct)
     """
+    # Define constants
+    MAX_X_INPUT = 999
+    MIN_X_INPUT = -999
+
     # Print the question
     print(f"\nQuestion {question_num + 1}: ")
     current_question = questions[question_num].pop(0)
@@ -225,11 +229,11 @@ def ask_question(question_num, questions):
 
     # Get the user to enter their answers and check they are integers
     user_x1 = input("Enter x value 1: ")
-    while check_int(user_x1) is False:
+    while check_int(user_x1, MAX_X_INPUT, MIN_X_INPUT) is False:
         user_x1 = input("Enter x value 1: ")
     user_x1 = int(user_x1)
     user_x2 = input("Enter x value 2: ")
-    while check_int(user_x2) is False:
+    while check_int(user_x2, MAX_X_INPUT, MIN_X_INPUT) is False:
         user_x2 = input("Enter x value 2: ")
     user_x2 = int(user_x2)
 
