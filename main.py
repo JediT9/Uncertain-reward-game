@@ -11,6 +11,7 @@ import random
 # Define variables
 main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
              "quit_game"]
+default_settings = {"difficulty": 1, "stakes_level": 10}
 
 
 # Define functions
@@ -59,7 +60,7 @@ def check_string(str_to_check, acceptable_strings: list):
         return False
 
 
-def menu_print(menu_items):
+def menu_print(menu_items, settings):
     """
     Print out formatted menu, then ask user which option they want to select,
     and call the relevant function.
@@ -73,8 +74,6 @@ def menu_print(menu_items):
     SET_STAKES_INPUT = 3
 
     # Set default variable values
-    difficulty = 1
-    stakes_level = 10
     user_input = 1
     while user_input != EXIT_PROGRAMME:
 
@@ -92,14 +91,14 @@ def menu_print(menu_items):
 
         # Run option specified by user
         if user_input == PLAY_QUIZ_INPUT:
-            play_quiz(difficulty, stakes_level)
+            play_quiz(settings)
         elif user_input == SET_DIFFICULTY_INPUT:
-            difficulty = select_difficulty()
+            settings["difficulty"] = select_difficulty()
         elif user_input == SET_STAKES_INPUT:
-            stakes_level = select_stakes_level()
+            settings["stakes_level"] = select_stakes_level()
 
 
-def play_quiz(difficulty, points_multiplier):
+def play_quiz(user_settings):
     """
     Accept the current difficulty and stakes values, and then run the main
     quiz.  If the user scores higher than the high score, update the value in
@@ -108,6 +107,8 @@ def play_quiz(difficulty, points_multiplier):
     # Set default values for variables
     quiz_length = 5
     total_points = 0
+    difficulty = user_settings["difficulty"]
+    points_multiplier = user_settings["stakes_level"]
 
     # Define constants
     MIN_POINTS = 1
@@ -167,14 +168,15 @@ def question_generator(num_of_questions, difficulty_multiplier):
     B_MULTI = 5
     C_MULTI = 5
     A_POWER = 2
+    DEFAULT_X_VALUE = 0.5
 
     # Start a for loop to repeat the generator as many times as specified
     for question in range(num_of_questions):
-        x1 = 0.5
-        x2 = 0.5
+        x_value_1 = DEFAULT_X_VALUE
+        x_value_2 = DEFAULT_X_VALUE
 
         # Continue generating new questions until one has both x-values as ints
-        while str(x1)[-1] != '0' or str(x2)[-1] != '0':
+        while str(x_value_1)[-1] != '0' or str(x_value_2)[-1] != '0':
 
             # Generate random values for each variable
             x = random.randint(MIN_VARIABLE, MAX_X)
@@ -189,10 +191,10 @@ def question_generator(num_of_questions, difficulty_multiplier):
             # Calculate the 2 x-values and make sure they aren't complex
             # numbers
             d = b ** 2 - 4 * a * c
-            x1 = (-b + cmath.sqrt(d)) / (2 * a)
-            x2 = (-b - cmath.sqrt(d)) / (2 * a)
-            x1 = x1 if x1.imag else x1.real
-            x2 = x2 if x2.imag else x2.real
+            x_value_1 = (-b + cmath.sqrt(d)) / (2 * a)
+            x_value_2 = (-b - cmath.sqrt(d)) / (2 * a)
+            x_value_1 = x_value_1 if x_value_1.imag else x_value_1.real
+            x_value_2 = x_value_2 if x_value_2.imag else x_value_2.real
 
             # Format the question
             question = f" {a}x^2 + {b}x + {c} = 0"
@@ -200,7 +202,7 @@ def question_generator(num_of_questions, difficulty_multiplier):
             question = question.replace(" + -", " - ")
 
         # Add generated question to list of all questions
-        questions_and_answers.append([question, x1, x2])
+        questions_and_answers.append([question, x_value_1, x_value_2])
 
     # Return generated questions and their answers
     return questions_and_answers
@@ -228,20 +230,21 @@ def ask_question(question_num, questions):
         working.append(input(""))
 
     # Get the user to enter their answers and check they are integers
-    user_x1 = input("Enter x value 1: ")
-    while check_int(user_x1, MAX_X_INPUT, MIN_X_INPUT) is False:
-        user_x1 = input("Enter x value 1: ")
-    user_x1 = int(user_x1)
-    user_x2 = input("Enter x value 2: ")
-    while check_int(user_x2, MAX_X_INPUT, MIN_X_INPUT) is False:
-        user_x2 = input("Enter x value 2: ")
-    user_x2 = int(user_x2)
+    user_x_value_1 = input("Enter x value 1: ")
+    while check_int(user_x_value_1, MAX_X_INPUT, MIN_X_INPUT) is False:
+        user_x_value_1 = input("Enter x value 1: ")
+    user_x_value_1 = int(user_x_value_1)
+    user_x_value_2 = input("Enter x value 2: ")
+    while check_int(user_x_value_2, MAX_X_INPUT, MIN_X_INPUT) is False:
+        user_x_value_2 = input("Enter x value 2: ")
+    user_x_value_2 = int(user_x_value_2)
 
     # Print the correct x-values
     print(f"The correct x-values are {int(questions[question_num][0])} and "
           f"{int(questions[question_num][-1])}")
-    return [user_x1 in questions[question_num],
-            user_x2 in questions[question_num] and user_x2 != user_x1]
+    return [user_x_value_1 in questions[question_num],
+            user_x_value_2 in questions[question_num] and
+            user_x_value_2 != user_x_value_1]
 
 
 def select_difficulty():
@@ -292,7 +295,7 @@ def select_stakes_level():
 
 
 # Call menu to begin code
-menu_print(main_menu)
+menu_print(main_menu, default_settings)
 
 # Thank user for playing
 print("Thank you for playing!")
