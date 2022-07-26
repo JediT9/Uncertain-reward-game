@@ -10,8 +10,8 @@ import random
 
 # Define variables
 main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
-             "quit_game"]
-default_settings = {"difficulty": 1, "stakes_level": 10}
+             "Select_quiz_length", "quit_game"]
+default_settings = {"difficulty": 1, "stakes_level": 10, "quiz_length": 5}
 
 
 # Define functions
@@ -67,11 +67,12 @@ def menu_print(menu_items, settings):
     """
 
     # Define constants
-    EXIT_PROGRAMME = 4
+    EXIT_PROGRAMME = 5
     MIN_MENU_INPUT = 1
     PLAY_QUIZ_INPUT = 1
     SET_DIFFICULTY_INPUT = 2
     SET_STAKES_INPUT = 3
+    SET_QUIZ_LENGTH = 4
 
     # Set default variable values
     user_input = 1
@@ -84,9 +85,9 @@ def menu_print(menu_items, settings):
                   f"{menu_items[menu_num].capitalize().replace('_', ' ')}")
 
         # Get user input and check it is an integer and a valid option
-        user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
+        user_input = input("\n> Enter menu option (1, 2, 3, 4, 5): ")
         while check_int(user_input, len(menu_items), MIN_MENU_INPUT) is False:
-            user_input = input("\n> Enter menu option (1, 2, 3, 4): ")
+            user_input = input("\n> Enter menu option (1, 2, 3, 4, 5): ")
         user_input = int(user_input)
 
         # Run option specified by user
@@ -96,6 +97,8 @@ def menu_print(menu_items, settings):
             settings["difficulty"] = select_difficulty()
         elif user_input == SET_STAKES_INPUT:
             settings["stakes_level"] = select_stakes_level()
+        elif user_input == SET_QUIZ_LENGTH:
+            settings["quiz_length"] = select_quiz_length()
 
 
 def play_quiz(user_settings):
@@ -105,7 +108,7 @@ def play_quiz(user_settings):
     high_score.txt
     """
     # Set default values for variables
-    quiz_length = 5
+    quiz_length = user_settings["quiz_length"]
     total_points = 0
     difficulty = user_settings["difficulty"]
     points_multiplier = user_settings["stakes_level"]
@@ -292,6 +295,23 @@ def select_stakes_level():
         stakes = input("> Enter stakes level: ")
     stakes = int(stakes)
     return stakes
+
+
+def select_quiz_length():
+    """
+    Ask the user how long they want the game to be, and return their answer.
+    """
+    # Define constants
+    MIN_LENGTH = 1
+    MAX_LENGTH = 10
+
+    # Ask user how long they want the quiz to be, and check they enter a valid
+    # number
+    quiz_length = input("> Enter quiz length: ")
+    while check_int(quiz_length, MAX_LENGTH, MIN_LENGTH) is False:
+        quiz_length = input("> Enter quiz length: ")
+    quiz_length = int(quiz_length)
+    return quiz_length
 
 
 # Call menu to begin code
