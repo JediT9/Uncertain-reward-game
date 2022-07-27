@@ -34,7 +34,7 @@ def check_int(int_to_check, max_int, min_int):
         # Check if it is between specified max and min, if it's not return
         # false
         if int_to_check < min_int or int_to_check > max_int:
-            print(f"Please enter a whole number between {min_int} "
+            print(f"Please enter a number between {min_int} "
                   f"and {max_int}")
             return False
         else:
@@ -146,6 +146,11 @@ def play_quiz(user_settings):
 
     # Print total points for the round
     print(f"\nWell done, you scored {total_points} this round!")
+
+    # Give user reward if score above 0
+    if total_points > 0:
+        print("Congratulations! You have won the uncertain reward of "
+              "knowledge!")
 
     # check if user's score is above the high score
     if total_points > high_score:
