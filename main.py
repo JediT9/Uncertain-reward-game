@@ -76,6 +76,8 @@ def menu_print(menu_items, settings):
 
     # Set default variable values
     user_input = 1
+
+    # Start while loop
     while user_input != EXIT_PROGRAMME:
 
         # Print welcome and list menu options
