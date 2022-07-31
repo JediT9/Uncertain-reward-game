@@ -9,9 +9,14 @@ import cmath
 import random
 
 # Define variables
-main_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
-             "Select_quiz_length", "quit_game"]
-default_settings = {"difficulty": 1, "stakes_level": 10, "quiz_length": 5}
+full_unlock_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
+                    "Select_quiz_length", "quit_game"]
+user_menu = ["play_quiz",
+             "select_difficulty - reach 20 total points to unlock",
+             "select_stakes_level - reach 40 total points to unlock",
+             "Select_quiz_length - reach 100 total points to unlock",
+             "quit_game"]
+default_settings = {"difficulty": 1, "stakes_level": 10, "quiz_length": 1}
 
 
 # Define functions
@@ -60,7 +65,7 @@ def check_string(str_to_check, acceptable_strings: list):
         return False
 
 
-def menu_print(menu_items, settings):
+def menu_print(menu_items, final_menu, settings):
     """
     Print out formatted menu, then ask user which option they want to select,
     and call the relevant function.
@@ -73,9 +78,17 @@ def menu_print(menu_items, settings):
     SET_DIFFICULTY_INPUT = 2
     SET_STAKES_INPUT = 3
     SET_QUIZ_LENGTH = 4
+    SETTINGS_TO_CHANGE = 4
+    MIN_DIFFICULTY_POINTS = 20
+    MIN_STAKES_POINTS = 40
+    MIN_LENGTH_POINTS = 100
+    SETTINGS_POINT_THRESHOLD = {SET_DIFFICULTY_INPUT: MIN_DIFFICULTY_POINTS,
+                                SET_STAKES_INPUT: MIN_STAKES_POINTS,
+                                SET_QUIZ_LENGTH: MIN_LENGTH_POINTS}
 
     # Set default variable values
     user_input = 1
+    session_points = 0
 
     # Start while loop
     while user_input != EXIT_PROGRAMME:
@@ -94,20 +107,35 @@ def menu_print(menu_items, settings):
 
         # Run option specified by user
         if user_input == PLAY_QUIZ_INPUT:
-            play_quiz(settings)
-        elif user_input == SET_DIFFICULTY_INPUT:
+            session_points += play_quiz(settings)
+
+            # Check if user unlocked extra settings
+            for setting_num in range(1, SETTINGS_TO_CHANGE):
+                if session_points >= SETTINGS_POINT_THRESHOLD[setting_num + 1]:
+                    menu_items[setting_num] = final_menu[setting_num]
+
+        elif user_input == SET_DIFFICULTY_INPUT and \
+                menu_items[user_input - 1] == final_menu[user_input - 1]:
             settings["difficulty"] = select_difficulty()
-        elif user_input == SET_STAKES_INPUT:
+
+        elif user_input == SET_STAKES_INPUT and \
+                menu_items[user_input - 1] == final_menu[user_input - 1]:
             settings["stakes_level"] = select_stakes_level()
-        elif user_input == SET_QUIZ_LENGTH:
+
+        elif user_input == SET_QUIZ_LENGTH and \
+                menu_items[user_input - 1] == final_menu[user_input - 1]:
             settings["quiz_length"] = select_quiz_length()
+
+        else:
+            print("Sorry, you have not scored enough points this session to "
+                  "change that setting")
 
 
 def play_quiz(user_settings):
     """
     Accept the current difficulty and stakes values, and then run the main
     quiz.  If the user scores higher than the high score, update the value in
-    high_score.txt
+    high_score.txt.  Return points scored.
     """
     # Set default values for variables
     quiz_length = user_settings["quiz_length"]
@@ -161,6 +189,7 @@ def play_quiz(user_settings):
         high_score_txt.seek(START_OF_FILE)
         high_score_txt.write(str(total_points))
     high_score_txt.close()
+    return total_points
 
 
 def question_generator(num_of_questions, difficulty_multiplier):
@@ -322,7 +351,7 @@ def select_quiz_length():
 
 
 # Call menu to begin code
-menu_print(main_menu, default_settings)
+menu_print(user_menu, full_unlock_menu, default_settings)
 
 # Thank user for playing
 print("Thank you for playing!")
