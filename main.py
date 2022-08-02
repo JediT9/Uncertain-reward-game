@@ -65,7 +65,8 @@ def check_string(str_to_check, acceptable_strings: list):
         return False
 
 
-def menu_print(menu_items, final_menu, settings):
+def menu_print(menu_items, final_menu, settings, player_username,
+               player_pb=0, player_total=0):
     """
     Print out formatted menu, then ask user which option they want to select,
     and call the relevant function.
@@ -88,12 +89,18 @@ def menu_print(menu_items, final_menu, settings):
 
     # Set default variable values
     user_input = 1
-    session_points = 0
+
+    player_total = int(player_total)
+
+    for setting_num in range(1, SETTINGS_TO_CHANGE):
+        if player_total >= SETTINGS_POINT_THRESHOLD[setting_num + 1]:
+            menu_items[setting_num] = final_menu[setting_num]
 
     # Start while loop
     while user_input != EXIT_PROGRAMME:
 
         # Print welcome and list menu options
+        print(f"\nSigned in as {player_username}")
         print("\nMain menu:\n")
         for menu_num in range(len(menu_items)):
             print(f"{menu_num + 1}). "
@@ -107,12 +114,16 @@ def menu_print(menu_items, final_menu, settings):
 
         # Run option specified by user
         if user_input == PLAY_QUIZ_INPUT:
-            session_points += play_quiz(settings)
+            round_score = play_quiz(settings, player_pb)
+            player_total += round_score
 
             # Check if user unlocked extra settings
             for setting_num in range(1, SETTINGS_TO_CHANGE):
-                if session_points >= SETTINGS_POINT_THRESHOLD[setting_num + 1]:
+                if player_total >= SETTINGS_POINT_THRESHOLD[setting_num + 1]:
                     menu_items[setting_num] = final_menu[setting_num]
+
+            if round_score > player_pb:
+                player_pb = round_score
 
         elif user_input == SET_DIFFICULTY_INPUT and \
                 menu_items[user_input - 1] == final_menu[user_input - 1]:
@@ -126,12 +137,14 @@ def menu_print(menu_items, final_menu, settings):
                 menu_items[user_input - 1] == final_menu[user_input - 1]:
             settings["quiz_length"] = select_quiz_length()
 
-        else:
+        elif user_input != 5:
             print("Sorry, you have not scored enough points this session to "
                   "change that setting")
 
+    return [player_pb, player_total]
 
-def play_quiz(user_settings):
+
+def play_quiz(user_settings, pb):
     """
     Accept the current difficulty and stakes values, and then run the main
     quiz.  If the user scores higher than the high score, update the value in
@@ -156,6 +169,7 @@ def play_quiz(user_settings):
     high_score = high_score_txt.read()
     high_score = int(high_score)
     print(f"The current high score is: {high_score}")
+    print(f"Your personal best is: {pb}")
 
     # Start loop for each question
     for question in range(quiz_length):
@@ -216,7 +230,6 @@ def question_generator(num_of_questions, difficulty_multiplier):
 
         # Continue generating new questions until one has both x-values as ints
         while str(x_value_1)[-1] != '0' or str(x_value_2)[-1] != '0':
-
             # Generate random values for each variable
             x = random.randint(MIN_VARIABLE, MAX_X)
             a = random.randint(MIN_VARIABLE, difficulty_multiplier ** A_POWER)
@@ -350,8 +363,54 @@ def select_quiz_length():
     return quiz_length
 
 
-# Call menu to begin code
-menu_print(user_menu, full_unlock_menu, default_settings)
+def login(full_unlock_menu1, default_settings1, user_menu1):
+    raw_data_txt = open("login details.txt", "r+")
+    raw_data = raw_data_txt.read()
+    all_user_data = raw_data.split("\n")
+    user_split_data = {}
+    for i in all_user_data:
+        i = i.split(" /n/n/ ")
+        user_split_data[i[0]] = [i[1], i[2], i[3]]
+
+    add_account = input("Do you already have an account (y/n): ")
+    while check_string(add_account, ["y", "n"]) is False:
+        add_account = input("Do you already have an account (y/n): ")
+
+    if add_account == 'n':
+        username = input("> Enter your new username: ")
+        password = input("> Enter your new password")
+        menu_print(user_menu1, full_unlock_menu1, default_settings1,
+                   username)
+    elif add_account == "y":
+        username = input("> Enter your username: ")
+        while username not in raw_data:
+            print("Sorry, we could not find that account, please try again")
+            username = input("> Enter your username: ")
+
+        correct_password = user_split_data[username][0]
+        password = input("> Enter your password: ")
+        while password != correct_password:
+            print("Incorrect, please try again")
+            password = input("> Enter your password: ")
+        personal_best = int(user_split_data[username][1])
+        total_points = int(user_split_data[username][2])
+
+        final_data = menu_print(user_menu1, full_unlock_menu1,
+                                default_settings1, username, personal_best,
+                                total_points)
+        info_to_update = f"{username} /n/n/ {password} /n/n/ {final_data[0]}" \
+                         f" /n/n/ {final_data[1]}"
+        og_info = f"{username} /n/n/ {password} /n/n/ {personal_best} /n/n/" \
+                  f" {total_points}"
+
+        updated_data = raw_data.replace(og_info, info_to_update)
+        raw_data_txt.seek(0)
+        raw_data_txt.write(updated_data)
+        raw_data_txt.close()
+
+
+# Begin programme
+login(full_unlock_menu, default_settings, user_menu)
 
 # Thank user for playing
 print("Thank you for playing!")
