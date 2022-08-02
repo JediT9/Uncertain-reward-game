@@ -1,0 +1,5 @@
+jedi /n/n/ jedi /n/n/ 1 /n/n/ 1
+jedi1 /n/n/ jedi /n/n/ 1 /n/n/ 34
+jedi2 /n/n/ jedi /n/n/ 1 /n/n/ 1
+f /n/n/ f /n/n/ 56 /n/n/ 96
+fight me /n/n/ no you /n/n/ 56 /n/n/ 96
