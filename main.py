@@ -7,6 +7,8 @@
 # Import modules
 import cmath
 import random
+import zlib
+from base64 import urlsafe_b64encode as b64e, urlsafe_b64decode as b64d
 
 # Define variables
 full_unlock_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
@@ -123,6 +125,8 @@ def menu_print(menu_items, final_menu, settings, player_username,
                     menu_items[setting_num] = final_menu[setting_num]
 
             if round_score > player_pb:
+                print(f"Congratulations! You beat your former personal best "
+                      f"of {player_pb} by {round_score - player_pb} points")
                 player_pb = round_score
 
         elif user_input == SET_DIFFICULTY_INPUT and \
@@ -191,11 +195,6 @@ def play_quiz(user_settings, pb):
     # Print total points for the round
     print(f"\nWell done, you scored {total_points} this round!")
 
-    # Give user reward if score above 0
-    if total_points > 0:
-        print("Congratulations! You have won the uncertain reward of "
-              "knowledge!")
-
     # check if user's score is above the high score
     if total_points > high_score:
         print(f"Congratulations! You beat the former high score of "
@@ -203,6 +202,9 @@ def play_quiz(user_settings, pb):
         high_score_txt.seek(START_OF_FILE)
         high_score_txt.write(str(total_points))
     high_score_txt.close()
+
+    # Check if user's score above personal best
+
     return total_points
 
 
@@ -378,9 +380,16 @@ def login(full_unlock_menu1, default_settings1, user_menu1):
 
     if add_account == 'n':
         username = input("> Enter your new username: ")
-        password = input("> Enter your new password")
-        menu_print(user_menu1, full_unlock_menu1, default_settings1,
-                   username)
+        password = input("> Enter your new password: ")
+        password = password.encode("utf-8")
+        password = b64e(zlib.compress(password, 9))
+        password = password.decode("utf-8")
+        final_data = menu_print(user_menu1, full_unlock_menu1,
+                                default_settings1, username)
+        info_to_add = f"\n{username} /n/n/ {password} /n/n/ {final_data[0]}" \
+                      f" /n/n/ {final_data[1]}"
+        raw_data_txt.write(info_to_add)
+        raw_data_txt.close()
     elif add_account == "y":
         username = input("> Enter your username: ")
         while username not in raw_data:
@@ -388,6 +397,9 @@ def login(full_unlock_menu1, default_settings1, user_menu1):
             username = input("> Enter your username: ")
 
         correct_password = user_split_data[username][0]
+        correct_password = correct_password.encode("utf-8")
+        correct_password = zlib.decompress(b64d(correct_password))
+        correct_password = correct_password.decode("utf-8")
         password = input("> Enter your password: ")
         while password != correct_password:
             print("Incorrect, please try again")
