@@ -18,7 +18,7 @@ user_menu = ["play_quiz",
              "select_stakes_level - reach 40 total points to unlock",
              "Select_quiz_length - reach 100 total points to unlock",
              "quit_game"]
-default_settings = {"difficulty": 1, "stakes_level": 10, "quiz_length": 1}
+default_settings = {"difficulty": 1, "stakes_level": 10, "quiz_length": 5}
 
 
 # Define functions
