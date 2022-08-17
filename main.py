@@ -11,8 +11,13 @@ import zlib
 from base64 import urlsafe_b64encode as b64e, urlsafe_b64decode as b64d
 
 # Define variables
-full_unlock_menu = ["play_quiz", "select_difficulty", "select_stakes_level",
-                    "Select_quiz_length", "quit_game"]
+full_unlock_menu = ["play_quiz",
+                    "Select_difficulty – changes difficulty of questions",
+                    "Select_stakes_level – changes max points won/lost per "
+                    "question",
+                    "Select quiz length – changes number of questions per "
+                    "game",
+                    "quit_game"]
 user_menu = ["play_quiz",
              "select_difficulty - reach 20 total points to unlock",
              "select_stakes_level - reach 40 total points to unlock",
@@ -374,7 +379,7 @@ def login(full_unlock_menu1, default_settings1, user_menu1):
         i = i.split(" /n/n/ ")
         user_split_data[i[0]] = [i[1], i[2], i[3]]
 
-    add_account = input("Do you already have an account (y/n): ")
+    add_account = input("\nDo you already have an account (y/n): ")
     while check_string(add_account, ["y", "n"]) is False:
         add_account = input("Do you already have an account (y/n): ")
 
@@ -422,6 +427,7 @@ def login(full_unlock_menu1, default_settings1, user_menu1):
 
 
 # Begin programme
+print("Welcome to uncertain quadratics!")
 login(full_unlock_menu, default_settings, user_menu)
 
 # Thank user for playing
